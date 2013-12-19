@@ -1,0 +1,10 @@
+/*
+ * This file is NOT maintained automatically by Bndtools.
+ *
+ * Put overrides and extras that should be applied to the root project and/or
+ * all included projects into this file. Overrides and extras that should
+ * be applied to individual projects should be placed in a "build.gradle" file
+ * in the root directory of that project.
+ *
+ * This file will be loaded after the "build-template.gradle" file.
+ */

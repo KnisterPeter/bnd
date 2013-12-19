@@ -1,0 +1,26 @@
+/*
+ * WARNING
+ *
+ * This file is maintained automatically by Bndtools.
+ * You should not edit it directly. Instead, put overrides and extras that
+ * should be applied to the root project and/or all included projects into
+ * the "cnf/gradle/build-custom.gradle" file. Overrides and extras that should
+ * be applied to individual projects should be placed in a "build.gradle" file
+ * in the root directory of that project.
+ *
+ * This file will include all:
+ * - bnd projects   : a bnd project is a directory directly below the workspace
+ *                    root directory, with a "bnd.bnd" file.
+ * - gradle projects: a gradle project is a directory directly below the
+ *                    workspace root directory, with a "build.gradle" file.
+ */
+
+
+/* Include bnd projects and gradle projects */
+properties.rootDir.eachFile {
+  if (it.isDirectory() && (new File(it, 'bnd.bnd'     ).exists() ||
+                           new File(it, 'build.gradle').exists())
+     ) {
+    include "$it.name"
+  }
+}

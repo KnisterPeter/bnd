@@ -1,0 +1,27 @@
+/*
+ * WARNING
+ *
+ * This file is maintained automatically by Bndtools.
+ * You should not edit it directly. Instead, put overrides and extras that
+ * should be applied to the root project and/or all included projects into
+ * the "build-custom.gradle" file. Overrides and extras that should
+ * be applied to individual projects should be placed in a "build.gradle" file
+ * in the root directory of that project.
+ *
+ * This file defines the default layout of a bnd (java) project
+ */
+
+project.buildDir                               =               project.ext.bnd_buildDir
+project.libsDirName                            =               project.ext.bnd_libsDirName
+project.testResultsDirName                     =               project.ext.bnd_testResultsDirName
+project.testReportDirName                      =               project.ext.bnd_testReportDirName
+
+project.sourceSets.main.java.srcDirs           = project.files(project.ext.bnd_srcDir            )
+project.sourceSets.main.resources.srcDirs      = project.files(project.ext.bnd_srcDir            )
+project.sourceSets.main.output.classesDir      =               project.ext.bnd_srcBinDir
+project.sourceSets.main.output.resourcesDir    =               project.ext.bnd_srcBinDir
+
+project.sourceSets.test.java.srcDirs           = project.files(project.ext.bnd_testSrcDir        )
+project.sourceSets.test.resources.srcDirs      = project.files(project.ext.bnd_testSrcDir        )
+project.sourceSets.test.output.classesDir      =               project.ext.bnd_testSrcBinDir
+project.sourceSets.test.output.resourcesDir    =               project.ext.bnd_testSrcBinDir

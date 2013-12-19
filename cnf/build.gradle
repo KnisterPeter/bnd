@@ -1,0 +1,12 @@
+/*
+ * A java project with bnd layout
+ */
+
+apply plugin: "java"
+defaultTasks  "jar"
+
+/* Setup the java project bnd layout */
+apply from: rootProject.file("$rootProject.ext.bnd_cnf/gradle/build-bndLayout.gradle")
+
+/* Only create a jar when there are source files */
+jar.onlyIf { !project.fileTree(project.projectDir).include("$project.ext.bnd_srcDir/**/*.java").isEmpty() }

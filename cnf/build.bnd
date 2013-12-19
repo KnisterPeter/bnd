@@ -86,3 +86,7 @@ Bundle-SCM:             git://github.com/bndtools/bnd.git
 -runpath:\
 	org.eclipse.osgi;version=3.5,\
 	com.springsource.junit;export="junit.framework;version=3.8"
+
+
+# Temporarily change the default verbosity for the Gradle build
+-verbose: false

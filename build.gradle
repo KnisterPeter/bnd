@@ -1,0 +1,25 @@
+/*
+ * WARNING
+ *
+ * This file is maintained automatically by Bndtools.
+ * You should not edit it directly. Instead, put overrides and extras that
+ * should be applied to the root project and/or all included projects into
+ * the "cnf/gradle/build-custom.gradle" file. Overrides and extras that should
+ * be applied to individual projects should be placed in a "build.gradle" file
+ * in the root directory of that project.
+ *
+ * This is main build file
+ */
+
+/* Define some configuration (cnf) project setting */
+rootProject.ext.bnd_cnf         = "cnf"
+rootProject.ext.bnd_cnf_plugins = "$rootProject.ext.bnd_cnf/plugins"
+
+/* Setup the build dependencies */
+apply from: rootProject.file("$rootProject.ext.bnd_cnf/gradle/build-dependencies.gradle")
+
+/* Load the build template */
+apply from: rootProject.file("$rootProject.ext.bnd_cnf/gradle/build-template.gradle")
+
+/* Load the build customisations */
+apply from: rootProject.file("$rootProject.ext.bnd_cnf/gradle/build-custom.gradle")

@@ -1,0 +1,93 @@
+/*
+ * WARNING
+ *
+ * This file is maintained automatically by Bndtools.
+ * You should not edit it directly. Instead, put overrides and extras that
+ * should be applied to the root project and/or all included projects into
+ * the "build-custom.gradle" file. Overrides and extras that should
+ * be applied to individual projects should be placed in a "build.gradle" file
+ * in the root directory of that project.
+ *
+ * This file will store the build dependencies as a fileTree in the
+ * "bnd_buildDependencies" variable of the root project. This variable can then
+ * be used in other build script files to setup the build dependencies, see the
+ * "build-template.gradle" build script file for an example.
+ *
+ * The build dependencies are specified in the "cnf/build.properties" file:
+ * - All "*.url" and "*.location" settings are build dependencies.
+ * - An "example.url" setting has priority over an "example.location" setting,
+ *   which means that the "example.location" setting will be ignored if both
+ *   are specified.
+ * - An "example.url" setting will make the build script download the "example"
+ *   build dependency from the specified URL into the "cnf/plugins" directory
+ *   and add it to the build dependencies.
+ * - An "example.location" setting will make the build script add the specified
+ *   location to the build dependencies
+ */
+
+
+/* Load the build properties */
+rootProject.ext.bnd_buildProperties = new Properties()
+rootProject.file("$rootProject.ext.bnd_cnf/build.properties").withReader {
+  reader -> rootProject.ext.bnd_buildProperties.load(reader)
+}
+
+Set<String> buildDependencies     = new HashSet<String>()
+Set<String> evaluatedDependencies = new HashSet<String>()
+
+/* Loop over *.url settings */
+rootProject.ext.bnd_buildProperties.findAll({it.key.trim().toLowerCase() ==~ ".+\\.url\$"}).each {
+  String propKey        = it.key.trim()
+  String propValue      = it.value.trim()
+  String dependencyName = propKey.replaceFirst("\\.url\$", "")
+  if (!propValue.isEmpty()) {
+    if (evaluatedDependencies.contains(dependencyName.toLowerCase())) {
+      println "Warning: Build dependency $dependencyName was already processed, skipping $propKey"
+    } else {
+      URL url = null
+      try {
+        url = new URL(propValue)
+      } catch (MalformedURLException e) {
+        throw new GradleException("Build property $propKey specifies an invalid URL: " + e.getMessage())
+      }
+
+      String urlBaseName        = propValue.replaceAll("^.*/", "")
+      String dependencyFileName = "$rootProject.ext.bnd_cnf_plugins/$urlBaseName"
+      File   dependencyFile     = rootProject.file(dependencyFileName)
+      if (!dependencyFile.exists()) {
+        printf "Downloading build dependency $dependencyName..."
+        new File(rootProject.ext.bnd_cnf_plugins).mkdirs()
+        try {
+          url.withInputStream{ is -> dependencyFile.withOutputStream{ it << is }}
+        } catch (Exception e) {
+          throw new GradleException("Downloading build dependency $dependencyName from $url failed.")
+        }
+        println " done"
+      }
+      buildDependencies.add(dependencyFileName)
+      evaluatedDependencies.add(dependencyName.toLowerCase())
+    }
+  }
+}
+
+/* Loop over *.location settings */
+rootProject.ext.bnd_buildProperties.findAll({it.key.trim().toLowerCase() ==~ ".+\\.location\$"}).each {
+  String propKey        = it.key.trim()
+  String propValue      = it.value.trim()
+  String dependencyName = propKey.replaceFirst("\\.location\$", "")
+  if (!propValue.isEmpty()) {
+    if (evaluatedDependencies.contains(dependencyName.toLowerCase())) {
+      println "Warning: Build dependency $dependencyName was already processed, skipping $propKey"
+    } else {
+      String dependencyFileName = propValue
+      File dependencyFile       = rootProject.file(dependencyFileName)
+      if (!dependencyFile.exists()) {
+        throw new GradleException("Build dependency $dependencyName ($dependencyFileName) does not exist.")
+      }
+      buildDependencies.add(dependencyFileName)
+      evaluatedDependencies.add(dependencyName.toLowerCase())
+    }
+  }
+}
+
+rootProject.ext.bnd_buildDependencies = rootProject.fileTree(rootProject.rootDir).include(buildDependencies)
