@@ -1,0 +1,2 @@
+#!/bin/bash
+dot -Tsvg "gradle.dot" -o "gradle.svg"
