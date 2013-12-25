@@ -51,6 +51,14 @@ rootProject.ext.bnd_buildProperties.findAll({it.key.trim().toLowerCase() ==~ ".+
         throw new GradleException("Build property $propKey specifies an invalid URL: " + e.getMessage())
       }
 
+      if (url.getProtocol().equals("file")) {
+        String urlPath = url.getPath()
+        if (!new File(urlPath).isAbsolute()) {
+          urlPath = rootProject.file(urlPath).getAbsolutePath()
+          url = new URL("file", null, urlPath)
+        }
+      }
+
       String urlBaseName        = propValue.replaceAll("^.*/", "")
       String dependencyFileName = "$rootProject.ext.bnd_cnf_plugins/$urlBaseName"
       File   dependencyFile     = rootProject.file(dependencyFileName)
