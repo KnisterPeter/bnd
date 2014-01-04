@@ -344,8 +344,8 @@ subprojects { project ->
       outputs.files { project.fileTree(project.projectDir).include("$project.ext.bnd_exportDir/*.jar") }
 
       doFirst {
-        project.file(project.ext.bnd_exportDir).mkdirs()
         project.ext.bnd_runFiles.each { File f ->
+          project.file(project.ext.bnd_exportDir).mkdirs()
           String runFile = project.relativePath(f)
           String jarFile = runFile.replaceAll("\\.bndrun\$", ".jar")
           try {
